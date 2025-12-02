@@ -14,10 +14,11 @@ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 find_package(PkgConfig REQUIRED)
 
 # Trova Mapnik
-pkg_check_modules(MAPNIK REQUIRED mapnik>=3.0)
+pkg_check_modules(MAPNIK REQUIRED libmapnik>=3.0)
 
 # Trova Boost (richiesto da Mapnik)
-find_package(Boost REQUIRED COMPONENTS system filesystem)
+# Usa il nuovo approccio di Boost che non richiede componenti specifici
+find_package(Boost REQUIRED)
 
 # Include directories
 include_directories(

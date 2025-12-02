@@ -23,6 +23,18 @@ int main() {
         // Se hai uno shapefile, puoi aggiungerlo qui:
         // renderer.addShapefileLayer("data/italy.shp", "italy_base");
         
+        // Aggiungi alcuni punti di esempio per visualizzare la mappa
+        std::vector<ioc_earth::GPSPoint> demo_points = {
+            {11.5, 42.0, "Nord-Ovest"},
+            {12.5, 42.0, "Nord-Est"},
+            {11.5, 43.0, "Sud-Ovest"},
+            {12.5, 43.0, "Sud-Est"},
+            {12.0, 42.5, "Centro"}
+        };
+        
+        std::cout << "Aggiunta punti di riferimento..." << std::endl;
+        renderer.addPointLabels(demo_points, "timestamp", 14);
+        
         // Renderizza la mappa
         std::string output_file = "simple_map.png";
         if (renderer.renderToFile(output_file)) {

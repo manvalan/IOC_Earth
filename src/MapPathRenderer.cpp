@@ -3,29 +3,22 @@
 #include <mapnik/rule.hpp>
 #include <mapnik/feature_type_style.hpp>
 #include <mapnik/symbolizer.hpp>
-#include <mapnik/line_symbolizer.hpp>
-#include <mapnik/text/placements/dummy.hpp>
-#include <mapnik/text/text_properties.hpp>
-#include <mapnik/text/formatting/text.hpp>
 #include <mapnik/datasource_cache.hpp>
 #include <mapnik/font_engine_freetype.hpp>
 #include <mapnik/agg_renderer.hpp>
 #include <mapnik/image_util.hpp>
-#include <mapnik/load_map.hpp>
 #include <mapnik/color.hpp>
 #include <mapnik/image.hpp>
-#include <mapnik/proj_transform.hpp>
-#include <mapnik/projection.hpp>
 #include <mapnik/datasource.hpp>
 #include <mapnik/memory_datasource.hpp>
 #include <mapnik/feature.hpp>
 #include <mapnik/geometry.hpp>
-#include <mapnik/markers_symbolizer.hpp>
-#include <mapnik/text_symbolizer.hpp>
+#include <mapnik/value.hpp>
 #include <sstream>
 #include <algorithm>
 #include <limits>
 #include <cmath>
+#include <iostream>
 
 namespace ioc_earth {
 
@@ -37,9 +30,19 @@ MapPathRenderer::MapPathRenderer(unsigned int width, unsigned int height)
 MapPathRenderer::~MapPathRenderer() = default;
 
 void MapPathRenderer::initializeMap() {
-    // Inizializza Mapnik
-    mapnik::datasource_cache::instance().register_datasources("/usr/local/lib/mapnik/input");
-    mapnik::freetype_engine::register_fonts("/usr/share/fonts", true);
+    // Inizializza Mapnik - percorsi per macOS con Homebrew
+    try {
+        mapnik::datasource_cache::instance().register_datasources("/opt/homebrew/lib/mapnik/input");
+    } catch (...) {
+        std::cerr << "Warning: Could not register datasources" << std::endl;
+    }
+    
+    try {
+        mapnik::freetype_engine::register_fonts("/opt/homebrew/share/fonts", true);
+        mapnik::freetype_engine::register_fonts("/System/Library/Fonts", true);
+    } catch (...) {
+        std::cerr << "Warning: Could not register fonts" << std::endl;
+    }
     
     // Crea la mappa
     map_ = std::make_unique<mapnik::Map>(width_, height_);
@@ -55,32 +58,36 @@ void MapPathRenderer::setExtent(double min_lon, double min_lat, double max_lon, 
 }
 
 void MapPathRenderer::addShapefileLayer(const std::string& shapefile_path, const std::string& layer_name) {
-    // Configura i parametri del datasource
-    mapnik::parameters params;
-    params["type"] = "shape";
-    params["file"] = shapefile_path;
-    
-    // Crea il layer
-    mapnik::layer lyr(layer_name);
-    lyr.set_datasource(mapnik::datasource_cache::instance().create(params));
-    lyr.set_srs("+proj=longlat +datum=WGS84 +no_defs");
-    
-    // Crea uno stile per il layer
-    mapnik::feature_type_style style;
-    mapnik::rule r;
-    
-    // Aggiungi simbolizzatori per poligoni e linee
-    mapnik::line_symbolizer line_sym;
-    mapnik::color line_color(128, 128, 128); // grigio
-    line_sym.set_stroke(mapnik::stroke(line_color, 1.0));
-    r.append(std::move(line_sym));
-    
-    style.add_rule(std::move(r));
-    
-    // Aggiungi lo stile e il layer alla mappa
-    map_->insert_style(layer_name + "_style", style);
-    lyr.add_style(layer_name + "_style");
-    map_->add_layer(lyr);
+    try {
+        // Configura i parametri del datasource
+        mapnik::parameters params;
+        params["type"] = "shape";
+        params["file"] = shapefile_path;
+        
+        // Crea il layer
+        mapnik::layer lyr(layer_name);
+        lyr.set_datasource(mapnik::datasource_cache::instance().create(params));
+        lyr.set_srs("+proj=longlat +datum=WGS84 +no_defs");
+        
+        // Crea uno stile semplice per il layer
+        mapnik::feature_type_style style;
+        mapnik::rule r;
+        
+        // Aggiungi un line symbolizer di base
+        mapnik::line_symbolizer line_sym;
+        mapnik::put(line_sym, mapnik::keys::stroke, mapnik::color(128, 128, 128));
+        mapnik::put(line_sym, mapnik::keys::stroke_width, 1.0);
+        r.append(std::move(line_sym));
+        
+        style.add_rule(std::move(r));
+        
+        // Aggiungi lo stile e il layer alla mappa
+        map_->insert_style(layer_name + "_style", style);
+        lyr.add_style(layer_name + "_style");
+        map_->add_layer(lyr);
+    } catch (const std::exception& e) {
+        std::cerr << "Error adding shapefile layer: " << e.what() << std::endl;
+    }
 }
 
 void MapPathRenderer::addGPSPath(const std::vector<GPSPoint>& points,
@@ -90,48 +97,48 @@ void MapPathRenderer::addGPSPath(const std::vector<GPSPoint>& points,
         return;
     }
     
-    // Crea un memory datasource
-    mapnik::parameters params;
-    params["type"] = "memory";
-    auto ds = std::make_shared<mapnik::memory_datasource>(params);
-    
-    // Crea una geometria linestring
-    mapnik::geometry::line_string<double> line;
-    for (const auto& point : points) {
-        line.add_coord(point.longitude, point.latitude);
+    try {
+        // Crea un memory datasource
+        mapnik::parameters params;
+        params["type"] = "memory";
+        auto ds = std::make_shared<mapnik::memory_datasource>(params);
+        
+        // Crea una geometria linestring usando l'API corretta di Mapnik 4
+        mapnik::geometry::line_string<double> line;
+        for (const auto& point : points) {
+            line.emplace_back(point.longitude, point.latitude);
+        }
+        
+        // Crea una feature e aggiungi la geometria
+        mapnik::context_ptr ctx = std::make_shared<mapnik::context_type>();
+        mapnik::feature_ptr feature = std::make_shared<mapnik::feature_impl>(ctx, 1);
+        feature->set_geometry(mapnik::geometry::geometry<double>(line));
+        ds->push(feature);
+        
+        // Crea il layer
+        mapnik::layer lyr("gps_path");
+        lyr.set_datasource(ds);
+        lyr.set_srs("+proj=longlat +datum=WGS84 +no_defs");
+        
+        // Crea lo stile
+        mapnik::feature_type_style style;
+        mapnik::rule r;
+        
+        mapnik::line_symbolizer line_sym;
+        mapnik::color color_obj(line_color);
+        mapnik::put(line_sym, mapnik::keys::stroke, color_obj);
+        mapnik::put(line_sym, mapnik::keys::stroke_width, line_width);
+        r.append(std::move(line_sym));
+        
+        style.add_rule(std::move(r));
+        
+        // Aggiungi alla mappa
+        map_->insert_style("gps_path_style", style);
+        lyr.add_style("gps_path_style");
+        map_->add_layer(lyr);
+    } catch (const std::exception& e) {
+        std::cerr << "Error adding GPS path: " << e.what() << std::endl;
     }
-    
-    // Crea una feature e aggiungi la geometria
-    mapnik::context_ptr ctx = std::make_shared<mapnik::context_type>();
-    mapnik::feature_ptr feature = std::make_shared<mapnik::feature_impl>(ctx, 1);
-    feature->set_geometry(mapnik::geometry::geometry<double>(line));
-    ds->push(feature);
-    
-    // Crea il layer
-    mapnik::layer lyr("gps_path");
-    lyr.set_datasource(ds);
-    lyr.set_srs("+proj=longlat +datum=WGS84 +no_defs");
-    
-    // Crea lo stile
-    mapnik::feature_type_style style;
-    mapnik::rule r;
-    
-    mapnik::line_symbolizer line_sym;
-    mapnik::color color_obj;
-    if (line_color[0] == '#') {
-        color_obj = mapnik::color(line_color);
-    } else {
-        color_obj = mapnik::color(line_color);
-    }
-    line_sym.set_stroke(mapnik::stroke(color_obj, line_width));
-    r.append(std::move(line_sym));
-    
-    style.add_rule(std::move(r));
-    
-    // Aggiungi alla mappa
-    map_->insert_style("gps_path_style", style);
-    lyr.add_style("gps_path_style");
-    map_->add_layer(lyr);
 }
 
 void MapPathRenderer::addPointLabels(const std::vector<GPSPoint>& points,
@@ -141,68 +148,62 @@ void MapPathRenderer::addPointLabels(const std::vector<GPSPoint>& points,
         return;
     }
     
-    // Crea un memory datasource per i punti
-    mapnik::parameters params;
-    params["type"] = "memory";
-    auto ds = std::make_shared<mapnik::memory_datasource>(params);
-    
-    // Crea un context con il campo per le etichette
-    mapnik::context_ptr ctx = std::make_shared<mapnik::context_type>();
-    ctx->push("label");
-    
-    // Aggiungi i punti
-    int feature_id = 1;
-    for (const auto& point : points) {
-        mapnik::feature_ptr feature = std::make_shared<mapnik::feature_impl>(ctx, feature_id++);
+    try {
+        // Crea un memory datasource per i punti
+        mapnik::parameters params;
+        params["type"] = "memory";
+        auto ds = std::make_shared<mapnik::memory_datasource>(params);
         
-        // Crea la geometria del punto
-        mapnik::geometry::point<double> pt(point.longitude, point.latitude);
-        feature->set_geometry(mapnik::geometry::geometry<double>(pt));
+        // Crea un context con il campo per le etichette
+        mapnik::context_ptr ctx = std::make_shared<mapnik::context_type>();
+        ctx->push("label");
         
-        // Imposta l'etichetta
-        if (label_field == "timestamp") {
-            feature->put("label", point.timestamp);
-        } else {
-            feature->put("label", point.timestamp); // Default al timestamp
+        // Aggiungi i punti
+        int feature_id = 1;
+        for (const auto& point : points) {
+            mapnik::feature_ptr feature = std::make_shared<mapnik::feature_impl>(ctx, feature_id++);
+            
+            // Crea la geometria del punto
+            mapnik::geometry::point<double> pt(point.longitude, point.latitude);
+            feature->set_geometry(mapnik::geometry::geometry<double>(pt));
+            
+            // Imposta l'etichetta usando UnicodeString
+            if (!point.timestamp.empty()) {
+                feature->put("label", mapnik::value_unicode_string(point.timestamp.c_str()));
+            }
+            
+            ds->push(feature);
         }
         
-        ds->push(feature);
+        // Crea il layer
+        mapnik::layer lyr("gps_points");
+        lyr.set_datasource(ds);
+        lyr.set_srs("+proj=longlat +datum=WGS84 +no_defs");
+        
+        // Crea lo stile con solo markers (semplificato)
+        mapnik::feature_type_style style;
+        mapnik::rule r;
+        
+        // Aggiungi marker per i punti
+        mapnik::markers_symbolizer marker_sym;
+        mapnik::put(marker_sym, mapnik::keys::fill, mapnik::color(255, 0, 0));
+        mapnik::put(marker_sym, mapnik::keys::width, mapnik::value_double(8.0));
+        mapnik::put(marker_sym, mapnik::keys::height, mapnik::value_double(8.0));
+        r.append(std::move(marker_sym));
+        
+        // Nota: Text symbolizer in Mapnik 4 ha un'API complessa
+        // Per ora usiamo solo i markers. Il text symbolizer richiede
+        // una configurazione più avanzata che dipende dalla versione specifica
+        
+        style.add_rule(std::move(r));
+        
+        // Aggiungi alla mappa
+        map_->insert_style("gps_points_style", style);
+        lyr.add_style("gps_points_style");
+        map_->add_layer(lyr);
+    } catch (const std::exception& e) {
+        std::cerr << "Error adding point labels: " << e.what() << std::endl;
     }
-    
-    // Crea il layer
-    mapnik::layer lyr("gps_points");
-    lyr.set_datasource(ds);
-    lyr.set_srs("+proj=longlat +datum=WGS84 +no_defs");
-    
-    // Crea lo stile con markers e testo
-    mapnik::feature_type_style style;
-    mapnik::rule r;
-    
-    // Aggiungi marker per i punti
-    mapnik::markers_symbolizer marker_sym;
-    r.append(std::move(marker_sym));
-    
-    // Aggiungi text symbolizer
-    mapnik::text_symbolizer text_sym;
-    mapnik::text_placements_ptr placements = std::make_shared<mapnik::text_placements_dummy>();
-    text_sym.set_placements(placements);
-    
-    // Configura le proprietà del testo
-    auto text_props = std::make_shared<mapnik::formatting::text_node>(
-        mapnik::parse_expression("[label]"));
-    text_sym.properties.from_xml = text_props;
-    text_sym.properties.format_defaults.face_name = "DejaVu Sans Book";
-    text_sym.properties.format_defaults.text_size = font_size;
-    text_sym.properties.format_defaults.fill = mapnik::color("black");
-    
-    r.append(std::move(text_sym));
-    
-    style.add_rule(std::move(r));
-    
-    // Aggiungi alla mappa
-    map_->insert_style("gps_points_style", style);
-    lyr.add_style("gps_points_style");
-    map_->add_layer(lyr);
 }
 
 void MapPathRenderer::setBackgroundColor(const std::string& color) {
@@ -223,7 +224,7 @@ bool MapPathRenderer::renderToFile(const std::string& output_path) {
         
         return true;
     } catch (const std::exception& e) {
-        // Log error (in una implementazione reale, usare un sistema di logging)
+        std::cerr << "Error rendering to file: " << e.what() << std::endl;
         return false;
     }
 }
@@ -250,6 +251,10 @@ void MapPathRenderer::autoSetExtentFromPoints(const std::vector<GPSPoint>& point
     // Aggiungi margine
     double lon_margin = (max_lon - min_lon) * (margin_percent / 100.0);
     double lat_margin = (max_lat - min_lat) * (margin_percent / 100.0);
+    
+    // Assicurati che ci sia almeno un margine minimo
+    if (lon_margin < 0.1) lon_margin = 0.1;
+    if (lat_margin < 0.1) lat_margin = 0.1;
     
     min_lon -= lon_margin;
     max_lon += lon_margin;

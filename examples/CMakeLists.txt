@@ -8,7 +8,11 @@ target_link_libraries(simple_map PRIVATE ioc_earth)
 add_executable(gps_track gps_track.cpp)
 target_link_libraries(gps_track PRIVATE ioc_earth)
 
+# Esempio con mappa dell'Italia
+add_executable(italy_map italy_map.cpp)
+target_link_libraries(italy_map PRIVATE ioc_earth)
+
 # Installa gli esempi (opzionale)
-install(TARGETS simple_map gps_track
+install(TARGETS simple_map gps_track italy_map
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
 )

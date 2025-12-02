@@ -72,8 +72,13 @@ gps_track
 docs/html/
 docs/latex/
 
-# Data files (opzionale, rimuovi se vuoi versionare i dati)
-# data/*.shp
-# data/*.shx
-# data/*.dbf
-# data/*.prj
+# Data files - shapefile scaricati (usare download_geodata.sh per riscaricarli)
+data/*.shp
+data/*.shx
+data/*.dbf
+data/*.prj
+data/*.cpg
+data/*.zip
+data/*.html
+data/*.txt
+data/VERSION.txt
