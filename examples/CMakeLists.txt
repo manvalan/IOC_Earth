@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.10)
+
+# Esempio base
+add_executable(simple_map simple_map.cpp)
+target_link_libraries(simple_map PRIVATE ioc_earth)
+
+# Esempio con tracciato GPS
+add_executable(gps_track gps_track.cpp)
+target_link_libraries(gps_track PRIVATE ioc_earth)
+
+# Installa gli esempi (opzionale)
+install(TARGETS simple_map gps_track
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
+)

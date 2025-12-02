@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: IOC_Earth
+Description: C++ library for rendering maps and GPS tracks using Mapnik
+Version: @PROJECT_VERSION@
+Requires: mapnik >= 3.0
+Libs: -L${libdir} -lioc_earth
+Cflags: -I${includedir}/ioc_earth

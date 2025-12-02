@@ -1,0 +1,79 @@
+# .gitignore per progetto C++ IOC_Earth
+
+# Build directories
+build/
+cmake-build-*/
+bin/
+lib/
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# Compiled Object files
+*.o
+*.obj
+*.lo
+*.slo
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.a
+*.la
+*.lai
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+simple_map
+gps_track
+
+# Generated files
+*.png
+*.jpg
+*.jpeg
+*.pdf
+*.svg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# pkg-config generated files
+*.pc
+!*.pc.in
+
+# Documentation
+docs/html/
+docs/latex/
+
+# Data files (opzionale, rimuovi se vuoi versionare i dati)
+# data/*.shp
+# data/*.shx
+# data/*.dbf
+# data/*.prj
