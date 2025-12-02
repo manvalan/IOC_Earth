@@ -321,6 +321,89 @@ cd build
 
 # Esegui l'esempio di export HTML con buffer
 ./examples/occultation_html
+
+# Esegui il demo completo di utilizzo API
+./examples/api_usage_demo
+```
+
+### 🔌 Integrazione con Applicazioni
+
+L'API è progettata per essere facilmente integrata in qualsiasi tipo di applicazione. Ecco alcuni esempi pratici:
+
+#### REST API / Web Service
+
+```cpp
+// Endpoint HTTP che restituisce l'immagine PNG
+std::vector<uint8_t> generateMapForAPI(const std::string& event_id) {
+    ioc_earth::OccultationRenderer renderer(1600, 1200);
+    renderer.loadFromJSON("data/" + event_id + ".json");
+    
+    std::vector<uint8_t> png_buffer;
+    renderer.renderToBuffer(png_buffer, true);
+    
+    // Restituisci png_buffer come HTTP response
+    // Content-Type: image/png
+    return png_buffer;
+}
+```
+
+#### JSON API
+
+```cpp
+// Endpoint che restituisce JSON con immagine embedded
+std::string generateJSONResponse(const std::string& event_id) {
+    ioc_earth::OccultationRenderer renderer(1600, 1200);
+    renderer.loadFromJSON("data/" + event_id + ".json");
+    
+    std::vector<uint8_t> buffer;
+    renderer.renderToBuffer(buffer, true);
+    std::string base64 = renderer.getLastRenderedImageBase64();
+    
+    return "{ \"map\": \"data:image/png;base64," + base64 + "\" }";
+}
+```
+
+#### Desktop Application (Qt)
+
+```cpp
+// Integrazione con Qt
+QPixmap loadMapInQt(const std::string& json_path) {
+    ioc_earth::OccultationRenderer renderer(1600, 1200);
+    renderer.loadFromJSON(json_path);
+    
+    std::vector<uint8_t> png_buffer;
+    renderer.renderToBuffer(png_buffer, true);
+    
+    QPixmap pixmap;
+    pixmap.loadFromData(png_buffer.data(), png_buffer.size(), "PNG");
+    return pixmap;
+}
+```
+
+#### Mobile App (React Native / Flutter)
+
+```javascript
+// React Native
+fetch('http://api.example.com/occultation/map?id=2024-06-03')
+  .then(response => response.json())
+  .then(data => {
+    // data.map contiene l'immagine in base64
+    return <Image source={{uri: data.map}} />;
+  });
+
+// Flutter
+Image.memory(base64Decode(mapData))
+```
+
+#### Electron / Web Desktop App
+
+```javascript
+// Ottieni l'immagine dall'API C++ via binding
+const pngBuffer = nativeModule.generateMap(eventId);
+const blob = new Blob([pngBuffer], { type: 'image/png' });
+const url = URL.createObjectURL(blob);
+document.getElementById('map').src = url;
+```
 ```
 
 ## 🤝 Contribuire
