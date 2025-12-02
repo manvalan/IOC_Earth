@@ -104,6 +104,32 @@ public:
                               bool include_shapefile = true);
     
     /**
+     * @brief Renderizza la mappa e restituisce i dati PNG come buffer
+     * @param png_data Vector che conterrà i dati PNG
+     * @param include_shapefile Se true, include i confini geografici
+     * @return true se il rendering è avvenuto con successo
+     */
+    bool renderToBuffer(std::vector<uint8_t>& png_data,
+                       bool include_shapefile = true);
+    
+    /**
+     * @brief Genera una pagina HTML con la mappa dell'occultazione embedded
+     * @param output_html_path Percorso del file HTML di output
+     * @param include_shapefile Se true, include i confini geografici
+     * @param page_title Titolo della pagina HTML
+     * @return true se la generazione è avvenuta con successo
+     */
+    bool exportToHTML(const std::string& output_html_path,
+                     bool include_shapefile = true,
+                     const std::string& page_title = "Occultation Map");
+    
+    /**
+     * @brief Ottiene l'ultimo buffer PNG renderizzato (base64 encoded)
+     * @return Stringa base64 dell'immagine PNG, vuota se nessuna immagine disponibile
+     */
+    std::string getLastRenderedImageBase64() const;
+    
+    /**
      * @brief Configura i colori e gli stili della visualizzazione
      */
     struct RenderStyle {
@@ -144,6 +170,9 @@ private:
     
     unsigned int width_;
     unsigned int height_;
+    
+    // Cache dell'ultima immagine renderizzata
+    mutable std::vector<uint8_t> last_rendered_buffer_;
     
     // Metodi helper privati
     void renderCentralLine();

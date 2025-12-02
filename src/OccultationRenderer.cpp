@@ -4,9 +4,59 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <iomanip>
 
 // Parser JSON semplice (per ora manuale, poi si può integrare nlohmann/json)
 #include <regex>
+
+// Per encoding base64
+namespace {
+    static const std::string base64_chars = 
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz"
+        "0123456789+/";
+    
+    std::string base64_encode(const std::vector<uint8_t>& data) {
+        std::string ret;
+        int i = 0;
+        int j = 0;
+        unsigned char char_array_3[3];
+        unsigned char char_array_4[4];
+        size_t in_len = data.size();
+        const unsigned char* bytes_to_encode = data.data();
+        
+        while (in_len--) {
+            char_array_3[i++] = *(bytes_to_encode++);
+            if (i == 3) {
+                char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+                char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+                char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+                char_array_4[3] = char_array_3[2] & 0x3f;
+                
+                for(i = 0; (i < 4); i++)
+                    ret += base64_chars[char_array_4[i]];
+                i = 0;
+            }
+        }
+        
+        if (i) {
+            for(j = i; j < 3; j++)
+                char_array_3[j] = '\0';
+            
+            char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+            char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+            char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+            
+            for (j = 0; (j < i + 1); j++)
+                ret += base64_chars[char_array_4[j]];
+            
+            while((i++ < 3))
+                ret += '=';
+        }
+        
+        return ret;
+    }
+}
 
 namespace ioc_earth {
 
@@ -377,6 +427,265 @@ bool OccultationRenderer::renderOccultationMap(const std::string& output_path,
         std::cerr << "Error rendering occultation map: " << e.what() << std::endl;
         return false;
     }
+}
+
+bool OccultationRenderer::renderToBuffer(std::vector<uint8_t>& png_data,
+                                         bool include_shapefile) {
+    try {
+        // Crea un file temporaneo
+        std::string temp_file = "/tmp/occultation_temp_" + 
+                               std::to_string(std::time(nullptr)) + ".png";
+        
+        // Renderizza su file
+        bool success = renderOccultationMap(temp_file, include_shapefile);
+        
+        if (!success) {
+            return false;
+        }
+        
+        // Leggi il file in memoria
+        std::ifstream file(temp_file, std::ios::binary);
+        if (!file) {
+            std::cerr << "Error: Cannot read temporary file" << std::endl;
+            return false;
+        }
+        
+        // Ottieni la dimensione del file
+        file.seekg(0, std::ios::end);
+        size_t file_size = file.tellg();
+        file.seekg(0, std::ios::beg);
+        
+        // Leggi i dati
+        png_data.resize(file_size);
+        file.read(reinterpret_cast<char*>(png_data.data()), file_size);
+        file.close();
+        
+        // Rimuovi il file temporaneo
+        std::remove(temp_file.c_str());
+        
+        // Salva nella cache
+        last_rendered_buffer_ = png_data;
+        
+        std::cout << "✓ Immagine PNG generata in buffer (" << png_data.size() << " bytes)" << std::endl;
+        
+        return true;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error rendering to buffer: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+bool OccultationRenderer::exportToHTML(const std::string& output_html_path,
+                                       bool include_shapefile,
+                                       const std::string& page_title) {
+    try {
+        std::cout << "\n=== Exporting to HTML ===" << std::endl;
+        
+        // Renderizza in buffer
+        std::vector<uint8_t> png_data;
+        if (!renderToBuffer(png_data, include_shapefile)) {
+            return false;
+        }
+        
+        // Converti in base64
+        std::string base64_image = base64_encode(png_data);
+        
+        // Crea la pagina HTML
+        std::ofstream html_file(output_html_path);
+        if (!html_file) {
+            std::cerr << "Error: Cannot create HTML file " << output_html_path << std::endl;
+            return false;
+        }
+        
+        // Scrivi l'HTML
+        html_file << "<!DOCTYPE html>\n";
+        html_file << "<html lang=\"it\">\n";
+        html_file << "<head>\n";
+        html_file << "    <meta charset=\"UTF-8\">\n";
+        html_file << "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n";
+        html_file << "    <title>" << page_title << "</title>\n";
+        html_file << "    <style>\n";
+        html_file << "        body {\n";
+        html_file << "            font-family: Arial, sans-serif;\n";
+        html_file << "            margin: 0;\n";
+        html_file << "            padding: 20px;\n";
+        html_file << "            background-color: #f5f5f5;\n";
+        html_file << "        }\n";
+        html_file << "        .container {\n";
+        html_file << "            max-width: 1200px;\n";
+        html_file << "            margin: 0 auto;\n";
+        html_file << "            background-color: white;\n";
+        html_file << "            padding: 30px;\n";
+        html_file << "            border-radius: 10px;\n";
+        html_file << "            box-shadow: 0 2px 10px rgba(0,0,0,0.1);\n";
+        html_file << "        }\n";
+        html_file << "        h1 {\n";
+        html_file << "            color: #333;\n";
+        html_file << "            border-bottom: 3px solid #4CAF50;\n";
+        html_file << "            padding-bottom: 10px;\n";
+        html_file << "        }\n";
+        html_file << "        .info-box {\n";
+        html_file << "            background-color: #f9f9f9;\n";
+        html_file << "            border-left: 4px solid #4CAF50;\n";
+        html_file << "            padding: 15px;\n";
+        html_file << "            margin: 20px 0;\n";
+        html_file << "        }\n";
+        html_file << "        .info-box h2 {\n";
+        html_file << "            margin-top: 0;\n";
+        html_file << "            color: #4CAF50;\n";
+        html_file << "            font-size: 1.2em;\n";
+        html_file << "        }\n";
+        html_file << "        .info-grid {\n";
+        html_file << "            display: grid;\n";
+        html_file << "            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));\n";
+        html_file << "            gap: 15px;\n";
+        html_file << "        }\n";
+        html_file << "        .info-item {\n";
+        html_file << "            padding: 10px;\n";
+        html_file << "            background-color: white;\n";
+        html_file << "            border-radius: 5px;\n";
+        html_file << "        }\n";
+        html_file << "        .info-label {\n";
+        html_file << "            font-weight: bold;\n";
+        html_file << "            color: #666;\n";
+        html_file << "            font-size: 0.9em;\n";
+        html_file << "        }\n";
+        html_file << "        .info-value {\n";
+        html_file << "            color: #333;\n";
+        html_file << "            font-size: 1.1em;\n";
+        html_file << "            margin-top: 5px;\n";
+        html_file << "        }\n";
+        html_file << "        .map-container {\n";
+        html_file << "            text-align: center;\n";
+        html_file << "            margin: 30px 0;\n";
+        html_file << "        }\n";
+        html_file << "        .map-container img {\n";
+        html_file << "            max-width: 100%;\n";
+        html_file << "            height: auto;\n";
+        html_file << "            border: 2px solid #ddd;\n";
+        html_file << "            border-radius: 5px;\n";
+        html_file << "            box-shadow: 0 4px 8px rgba(0,0,0,0.1);\n";
+        html_file << "        }\n";
+        html_file << "        .legend {\n";
+        html_file << "            background-color: #f9f9f9;\n";
+        html_file << "            padding: 15px;\n";
+        html_file << "            border-radius: 5px;\n";
+        html_file << "            margin-top: 20px;\n";
+        html_file << "        }\n";
+        html_file << "        .legend h3 {\n";
+        html_file << "            margin-top: 0;\n";
+        html_file << "            color: #333;\n";
+        html_file << "        }\n";
+        html_file << "        .legend-item {\n";
+        html_file << "            margin: 8px 0;\n";
+        html_file << "            display: flex;\n";
+        html_file << "            align-items: center;\n";
+        html_file << "        }\n";
+        html_file << "        .legend-color {\n";
+        html_file << "            width: 30px;\n";
+        html_file << "            height: 3px;\n";
+        html_file << "            margin-right: 10px;\n";
+        html_file << "        }\n";
+        html_file << "        .footer {\n";
+        html_file << "            text-align: center;\n";
+        html_file << "            color: #999;\n";
+        html_file << "            font-size: 0.9em;\n";
+        html_file << "            margin-top: 30px;\n";
+        html_file << "            padding-top: 20px;\n";
+        html_file << "            border-top: 1px solid #ddd;\n";
+        html_file << "        }\n";
+        html_file << "    </style>\n";
+        html_file << "</head>\n";
+        html_file << "<body>\n";
+        html_file << "    <div class=\"container\">\n";
+        html_file << "        <h1>" << page_title << "</h1>\n";
+        html_file << "        \n";
+        html_file << "        <div class=\"info-box\">\n";
+        html_file << "            <h2>Informazioni Evento</h2>\n";
+        html_file << "            <div class=\"info-grid\">\n";
+        html_file << "                <div class=\"info-item\">\n";
+        html_file << "                    <div class=\"info-label\">ID Evento</div>\n";
+        html_file << "                    <div class=\"info-value\">" << data_.event_id << "</div>\n";
+        html_file << "                </div>\n";
+        html_file << "                <div class=\"info-item\">\n";
+        html_file << "                    <div class=\"info-label\">Asteroide</div>\n";
+        html_file << "                    <div class=\"info-value\">" << data_.asteroid_name << "</div>\n";
+        html_file << "                </div>\n";
+        html_file << "                <div class=\"info-item\">\n";
+        html_file << "                    <div class=\"info-label\">Stella</div>\n";
+        html_file << "                    <div class=\"info-value\">" << data_.star_name << "</div>\n";
+        html_file << "                </div>\n";
+        html_file << "                <div class=\"info-item\">\n";
+        html_file << "                    <div class=\"info-label\">Data/Ora (UTC)</div>\n";
+        html_file << "                    <div class=\"info-value\">" << data_.date_time_utc << "</div>\n";
+        html_file << "                </div>\n";
+        html_file << "                <div class=\"info-item\">\n";
+        html_file << "                    <div class=\"info-label\">Durata</div>\n";
+        html_file << "                    <div class=\"info-value\">" << std::fixed << std::setprecision(1) 
+                  << data_.duration_seconds << " secondi</div>\n";
+        html_file << "                </div>\n";
+        html_file << "                <div class=\"info-item\">\n";
+        html_file << "                    <div class=\"info-label\">Calo Magnitudine</div>\n";
+        html_file << "                    <div class=\"info-value\">" << std::fixed << std::setprecision(1) 
+                  << data_.magnitude_drop << " mag</div>\n";
+        html_file << "                </div>\n";
+        html_file << "            </div>\n";
+        html_file << "        </div>\n";
+        html_file << "        \n";
+        html_file << "        <div class=\"map-container\">\n";
+        html_file << "            <img src=\"data:image/png;base64," << base64_image 
+                  << "\" alt=\"Mappa Occultazione\">\n";
+        html_file << "        </div>\n";
+        html_file << "        \n";
+        html_file << "        <div class=\"legend\">\n";
+        html_file << "            <h3>Legenda</h3>\n";
+        html_file << "            <div class=\"legend-item\">\n";
+        html_file << "                <div class=\"legend-color\" style=\"background-color: " 
+                  << style_.central_line_color << "; height: 3px;\"></div>\n";
+        html_file << "                <span>Percorso centrale dell'ombra</span>\n";
+        html_file << "            </div>\n";
+        html_file << "            <div class=\"legend-item\">\n";
+        html_file << "                <div class=\"legend-color\" style=\"background-color: " 
+                  << style_.sigma_lines_color << "; height: 3px;\"></div>\n";
+        html_file << "                <span>Limiti 1-sigma (incertezza)</span>\n";
+        html_file << "            </div>\n";
+        html_file << "            <div class=\"legend-item\">\n";
+        html_file << "                <div class=\"legend-color\" style=\"background-color: " 
+                  << style_.time_markers_color << "; height: 10px; width: 10px; border-radius: 50%;\"></div>\n";
+        html_file << "                <span>Marker temporali lungo il percorso</span>\n";
+        html_file << "            </div>\n";
+        html_file << "            <div class=\"legend-item\">\n";
+        html_file << "                <span style=\"margin-left: 40px;\">• Stazioni di osservazione con risultati</span>\n";
+        html_file << "            </div>\n";
+        html_file << "        </div>\n";
+        html_file << "        \n";
+        html_file << "        <div class=\"footer\">\n";
+        html_file << "            Generato da IOC_Earth - Libreria C++ per visualizzazione occultazioni asteroidali<br>\n";
+        html_file << "            <small>Dati compatibili con IOCalc</small>\n";
+        html_file << "        </div>\n";
+        html_file << "    </div>\n";
+        html_file << "</body>\n";
+        html_file << "</html>\n";
+        
+        html_file.close();
+        
+        std::cout << "✓ Pagina HTML generata: " << output_html_path << std::endl;
+        std::cout << "  Dimensione immagine embedded: " << png_data.size() << " bytes" << std::endl;
+        
+        return true;
+        
+    } catch (const std::exception& e) {
+        std::cerr << "Error exporting to HTML: " << e.what() << std::endl;
+        return false;
+    }
+}
+
+std::string OccultationRenderer::getLastRenderedImageBase64() const {
+    if (last_rendered_buffer_.empty()) {
+        return "";
+    }
+    return base64_encode(last_rendered_buffer_);
 }
 
 } // namespace ioc_earth

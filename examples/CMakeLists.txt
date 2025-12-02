@@ -16,7 +16,11 @@ target_link_libraries(italy_map PRIVATE ioc_earth)
 add_executable(occultation_map occultation_map.cpp)
 target_link_libraries(occultation_map PRIVATE ioc_earth)
 
+# Esempio con export HTML occultazione
+add_executable(occultation_html occultation_html.cpp)
+target_link_libraries(occultation_html PRIVATE ioc_earth)
+
 # Installa gli esempi (opzionale)
-install(TARGETS simple_map gps_track italy_map occultation_map
+install(TARGETS simple_map gps_track italy_map occultation_map occultation_html
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
 )

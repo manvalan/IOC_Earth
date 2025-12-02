@@ -213,6 +213,45 @@ renderer.setRenderStyle(style);
 
 // Renderizza con shapefile di sfondo
 renderer.renderOccultationMap("occultation_map.png", true);
+
+// OPPURE: Esporta direttamente in HTML con immagine embedded
+renderer.exportToHTML("report.html", true, "Mappa Occultazione");
+
+// OPPURE: Ottieni il buffer PNG per uso programmatico
+std::vector<uint8_t> png_buffer;
+renderer.renderToBuffer(png_buffer, true);
+// Ora puoi inviare png_buffer via rete, salvarlo in DB, ecc.
+
+// OPPURE: Ottieni l'immagine in formato base64
+std::string base64_image = renderer.getLastRenderedImageBase64();
+// Usa per embedding in JSON, HTML, ecc.
+```
+
+### Metodi Disponibili
+
+#### `renderOccultationMap(output_path, include_shapefile)`
+Renderizza la mappa e salva su file PNG.
+
+#### `exportToHTML(output_html_path, include_shapefile, page_title)`
+Genera una pagina HTML completa con:
+- Mappa embedded in base64
+- Informazioni sull'evento (asteroide, stella, data, durata, magnitudine)
+- Legenda interattiva
+- Design responsivo moderno
+
+#### `renderToBuffer(png_data, include_shapefile)`
+Renderizza la mappa e restituisce i dati PNG in un `std::vector<uint8_t>`.
+Utile per:
+- Invio via rete (HTTP API)
+- Storage in database
+- Processamento ulteriore
+
+#### `getLastRenderedImageBase64()`
+Restituisce l'ultima immagine renderizzata in formato base64.
+Utile per:
+- Embedding in HTML: `<img src="data:image/png;base64,...">`
+- JSON API responses
+- Database storage (campi TEXT/CLOB)
 ```
 
 ### Formato JSON
@@ -277,8 +316,11 @@ cd build
 # Esegui l'esempio con mappa dell'Italia
 ./examples/italy_map
 
-# Esegui l'esempio di occultazione asteroidale
+# Esegui l'esempio di occultazione asteroidale (PNG)
 ./examples/occultation_map
+
+# Esegui l'esempio di export HTML con buffer
+./examples/occultation_html
 ```
 
 ## 🤝 Contribuire
