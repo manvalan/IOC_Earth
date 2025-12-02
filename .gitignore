@@ -23,3 +23,6 @@ Makefile
 
 # Output files
 *.png
+
+# CodeQL files
+_codeql_detected_source_root
