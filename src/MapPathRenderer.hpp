@@ -133,12 +133,32 @@ public:
      * @return std::string Projection identifier
      */
     std::string getProjection() const;
+    
+    /**
+     * @brief Get the last error message
+     * @return std::string Last error message, empty if no error
+     */
+    std::string getLastError() const;
+    
+    /**
+     * @brief Set the font name used for text labels
+     * @param font_name Font name (e.g., "DejaVu Sans Book")
+     */
+    void setFontName(const std::string& font_name);
+    
+    /**
+     * @brief Get the current font name used for text labels
+     * @return std::string Current font name
+     */
+    std::string getFontName() const;
 
 private:
     std::unique_ptr<mapnik::Map> map_;
     std::string projection_;
     std::vector<TrackingPoint> all_tracking_points_;
     int layer_count_;
+    mutable std::string last_error_;
+    std::string font_name_;
     
     /**
      * @brief Convert coordinates from WGS84 (epsg:4326) to map projection

@@ -35,6 +35,7 @@ MapPathRenderer::MapPathRenderer(int width, int height, const std::string& proje
     : map_(std::make_unique<mapnik::Map>(width, height))
     , projection_(projection)
     , layer_count_(0)
+    , font_name_("DejaVu Sans Book")
 {
     // Set the map spatial reference system
     map_->set_srs("+init=" + projection_);
@@ -93,7 +94,7 @@ bool MapPathRenderer::loadBaseLayer(const std::string& shp_path, const std::stri
         return true;
     }
     catch (const std::exception& e) {
-        // Log error in production, for now just return false
+        last_error_ = e.what();
         return false;
     }
 }
@@ -260,7 +261,7 @@ bool MapPathRenderer::render(const std::string& output_path)
         return true;
     }
     catch (const std::exception& e) {
-        // Log error in production, for now just return false
+        last_error_ = e.what();
         return false;
     }
 }
@@ -278,6 +279,21 @@ int MapPathRenderer::getHeight() const
 std::string MapPathRenderer::getProjection() const
 {
     return projection_;
+}
+
+std::string MapPathRenderer::getLastError() const
+{
+    return last_error_;
+}
+
+void MapPathRenderer::setFontName(const std::string& font_name)
+{
+    font_name_ = font_name;
+}
+
+std::string MapPathRenderer::getFontName() const
+{
+    return font_name_;
 }
 
 void MapPathRenderer::transformCoordinates(double lon, double lat, double& x, double& y) const
@@ -340,7 +356,7 @@ void MapPathRenderer::createPointStyle(const std::string& style_name,
         mapnik::text_placements_ptr placements = 
             std::make_shared<mapnik::text_placements_dummy>();
         
-        placements->defaults.format_defaults.face_name = "DejaVu Sans Book";
+        placements->defaults.format_defaults.face_name = font_name_;
         placements->defaults.format_defaults.text_size = 10.0;
         placements->defaults.format_defaults.fill = mapnik::color("black");
         placements->defaults.format_defaults.halo_fill = mapnik::color("white");
