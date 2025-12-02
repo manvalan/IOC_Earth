@@ -1,0 +1,110 @@
+{
+  "id": "2024-06-03-Chariklo",
+  "event_type": "asteroid_occultation",
+  
+  "asteroid": {
+    "id": 10199,
+    "number": 10199,
+    "name": "Chariklo",
+    "designation": "(10199) Chariklo",
+    "diameter_km": 232.0
+  },
+  
+  "star": {
+    "catalog": "Tycho-2",
+    "catalog_id": "TYC 6009-01262-1",
+    "name": "TYC 6009-01262-1",
+    "coordinates": {
+      "ra_deg": 280.45,
+      "dec_deg": -23.12
+    },
+    "photometry": {
+      "magnitude_v": 11.3
+    }
+  },
+  
+  "event": {
+    "date_time": {
+      "jd": 2460465.427431,
+      "iso8601": "2024-06-03T22:15:30Z",
+      "gregorian": "2024-06-03 22:15:30 UTC"
+    },
+    "circumstances": {
+      "duration_seconds": 8.5,
+      "magnitude_drop": 5.2
+    },
+    "geometry": {
+      "shadow_properties": {
+        "shadow_velocity_km_s": 22.3
+      }
+    }
+  },
+  
+  "shadow_path": {
+    "central_line": [
+      {"lon": -10.0, "lat": 38.5, "time": "22:13:00"},
+      {"lon": -8.5, "lat": 39.2, "time": "22:13:30"},
+      {"lon": -7.0, "lat": 39.8, "time": "22:14:00"},
+      {"lon": -5.5, "lat": 40.3, "time": "22:14:30"},
+      {"lon": -4.0, "lat": 40.8, "time": "22:15:00"},
+      {"lon": -2.5, "lat": 41.2, "time": "22:15:30"},
+      {"lon": -1.0, "lat": 41.6, "time": "22:16:00"},
+      {"lon": 0.5, "lat": 41.9, "time": "22:16:30"},
+      {"lon": 2.0, "lat": 42.2, "time": "22:17:00"},
+      {"lon": 3.5, "lat": 42.4, "time": "22:17:30"},
+      {"lon": 5.0, "lat": 42.6, "time": "22:18:00"}
+    ],
+    
+    "northern_limit_1sigma": [
+      {"lon": -10.0, "lat": 39.0, "time": "22:13:00"},
+      {"lon": -8.5, "lat": 39.7, "time": "22:13:30"},
+      {"lon": -7.0, "lat": 40.3, "time": "22:14:00"},
+      {"lon": -5.5, "lat": 40.8, "time": "22:14:30"},
+      {"lon": -4.0, "lat": 41.3, "time": "22:15:00"},
+      {"lon": -2.5, "lat": 41.7, "time": "22:15:30"},
+      {"lon": -1.0, "lat": 42.1, "time": "22:16:00"},
+      {"lon": 0.5, "lat": 42.4, "time": "22:16:30"},
+      {"lon": 2.0, "lat": 42.7, "time": "22:17:00"},
+      {"lon": 3.5, "lat": 42.9, "time": "22:17:30"},
+      {"lon": 5.0, "lat": 43.1, "time": "22:18:00"}
+    ],
+    
+    "southern_limit_1sigma": [
+      {"lon": -10.0, "lat": 38.0, "time": "22:13:00"},
+      {"lon": -8.5, "lat": 38.7, "time": "22:13:30"},
+      {"lon": -7.0, "lat": 39.3, "time": "22:14:00"},
+      {"lon": -5.5, "lat": 39.8, "time": "22:14:30"},
+      {"lon": -4.0, "lat": 40.3, "time": "22:15:00"},
+      {"lon": -2.5, "lat": 40.7, "time": "22:15:30"},
+      {"lon": -1.0, "lat": 41.1, "time": "22:16:00"},
+      {"lon": 0.5, "lat": 41.4, "time": "22:16:30"},
+      {"lon": 2.0, "lat": 41.7, "time": "22:17:00"},
+      {"lon": 3.5, "lat": 41.9, "time": "22:17:30"},
+      {"lon": 5.0, "lat": 42.1, "time": "22:18:00"}
+    ]
+  },
+  
+  "time_markers": [
+    {"lon": -10.0, "lat": 38.5, "time": "22:13:00", "seconds_from_mid": -150},
+    {"lon": -7.0, "lat": 39.8, "time": "22:14:00", "seconds_from_mid": -90},
+    {"lon": -4.0, "lat": 40.8, "time": "22:15:00", "seconds_from_mid": -30},
+    {"lon": -2.5, "lat": 41.2, "time": "22:15:30", "seconds_from_mid": 0},
+    {"lon": -1.0, "lat": 41.6, "time": "22:16:00", "seconds_from_mid": 30},
+    {"lon": 2.0, "lat": 42.2, "time": "22:17:00", "seconds_from_mid": 90},
+    {"lon": 5.0, "lat": 42.6, "time": "22:18:00", "seconds_from_mid": 150}
+  ],
+  
+  "observation_stations": [
+    {"name": "Madrid", "lon": -3.7, "lat": 40.4, "status": "planned"},
+    {"name": "Barcelona", "lon": 2.2, "lat": 41.4, "status": "positive"},
+    {"name": "Porto", "lon": -8.6, "lat": 41.2, "status": "negative"},
+    {"name": "Lisbon", "lon": -9.1, "lat": 38.7, "status": "clouded"}
+  ],
+  
+  "metadata": {
+    "prediction_source": "IOCalc v1.0",
+    "computed_at": "2024-05-15T10:30:00Z",
+    "ephemeris": "JPL DE440",
+    "star_catalog": "Gaia DR3"
+  }
+}

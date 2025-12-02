@@ -10,6 +10,12 @@ Libreria C++ per il rendering di mappe e tracciati GPS utilizzando Mapnik.
 - ✅ Etichettatura automatica dei punti con `text_symbolizer`
 - ✅ Calcolo automatico dell'estensione della mappa dai punti GPS
 - ✅ Personalizzazione di colori, stili e dimensioni
+- ✅ **API specializzata per occultazioni asteroidali**
+  - Visualizzazione del percorso centrale dell'ombra
+  - Limiti di incertezza (1-sigma)
+  - Time markers lungo il percorso
+  - Stazioni di osservazione con stato
+  - Caricamento dati da JSON compatibile con IOCalc
 
 ## 🚀 Quick Start
 
@@ -180,6 +186,80 @@ IOC_Earth/
 
 ```
 
+## 🌟 Visualizzazione Occultazioni Asteroidali
+
+La libreria include un'API specializzata per visualizzare eventi di occultazione asteroidale:
+
+```cpp
+#include "OccultationRenderer.h"
+
+// Crea il renderer (1600x1200 pixels)
+ioc_earth::OccultationRenderer renderer(1600, 1200);
+
+// Carica i dati da file JSON (formato compatibile IOCalc)
+renderer.loadFromJSON("chariklo_occultation.json");
+
+// Personalizza lo stile
+ioc_earth::OccultationRenderer::RenderStyle style;
+style.central_line_color = "#FF0000";        // Rosso per linea centrale
+style.central_line_width = 3.0;
+style.sigma_lines_color = "#FF8800";         // Arancione per limiti 1-sigma
+style.sigma_lines_width = 2.0;
+style.time_markers_color = "#0000FF";        // Blu per marker temporali
+style.show_time_labels = true;
+style.show_station_labels = true;
+
+renderer.setRenderStyle(style);
+
+// Renderizza con shapefile di sfondo
+renderer.renderOccultationMap("occultation_map.png", true);
+```
+
+### Formato JSON
+
+```json
+{
+  "id": "2024-06-03-Chariklo",
+  "event_type": "asteroid_occultation",
+  "asteroid": {
+    "number": 10199,
+    "name": "Chariklo",
+    "diameter_km": 232.0
+  },
+  "star": {
+    "catalog_id": "TYC 6009-01262-1",
+    "photometry": {
+      "magnitude_v": 11.3
+    }
+  },
+  "event": {
+    "date_time": {
+      "iso8601": "2024-06-03T22:15:30Z"
+    },
+    "circumstances": {
+      "duration_seconds": 8.5,
+      "magnitude_drop": 5.2
+    }
+  },
+  "shadow_path": {
+    "central_line": [
+      {"lon": -10.0, "lat": 38.5, "time": "22:13:00"},
+      ...
+    ],
+    "northern_limit_1sigma": [...],
+    "southern_limit_1sigma": [...]
+  },
+  "time_markers": [
+    {"lon": -2.5, "lat": 41.2, "time": "22:15:30", "seconds_from_mid": 0},
+    ...
+  ],
+  "observation_stations": [
+    {"name": "Madrid", "lon": -3.7, "lat": 40.4, "status": "positive"},
+    ...
+  ]
+}
+```
+
 ## 🧪 Esempi
 
 Il progetto include programmi di esempio nella directory `examples/`:
@@ -193,6 +273,12 @@ cd build
 
 # Esegui l'esempio con tracciato GPS
 ./examples/gps_track
+
+# Esegui l'esempio con mappa dell'Italia
+./examples/italy_map
+
+# Esegui l'esempio di occultazione asteroidale
+./examples/occultation_map
 ```
 
 ## 🤝 Contribuire

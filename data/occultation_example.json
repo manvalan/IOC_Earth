@@ -1,0 +1,78 @@
+{
+  "event": {
+    "id": "2025_12_15_Chariklo_TYC6009",
+    "asteroid": {
+      "name": "(10199) Chariklo",
+      "number": 10199,
+      "diameter_km": 248.0,
+      "uncertainty_km": 10.0
+    },
+    "star": {
+      "name": "TYC 6009-01262-1",
+      "magnitude": 11.2,
+      "ra_deg": 123.456,
+      "dec_deg": -23.789
+    },
+    "event_time": {
+      "utc": "2025-12-15T23:45:30.000Z",
+      "jd": 2460665.489583
+    },
+    "prediction": {
+      "magnitude_drop": 8.8,
+      "duration_seconds": 45.2,
+      "max_duration_seconds": 52.0,
+      "shadow_velocity_km_s": 16.5
+    }
+  },
+  "shadow_path": {
+    "central_line": [
+      {"lon": -10.5, "lat": 42.8, "time": "2025-12-15T23:43:00.000Z"},
+      {"lon": -9.8, "lat": 42.5, "time": "2025-12-15T23:44:00.000Z"},
+      {"lon": -9.1, "lat": 42.2, "time": "2025-12-15T23:45:00.000Z"},
+      {"lon": -8.4, "lat": 41.9, "time": "2025-12-15T23:45:30.000Z"},
+      {"lon": -7.7, "lat": 41.6, "time": "2025-12-15T23:46:00.000Z"},
+      {"lon": -7.0, "lat": 41.3, "time": "2025-12-15T23:47:00.000Z"},
+      {"lon": -6.3, "lat": 41.0, "time": "2025-12-15T23:48:00.000Z"}
+    ],
+    "northern_limit_1sigma": [
+      {"lon": -10.5, "lat": 43.1, "time": "2025-12-15T23:43:00.000Z"},
+      {"lon": -9.8, "lat": 42.8, "time": "2025-12-15T23:44:00.000Z"},
+      {"lon": -9.1, "lat": 42.5, "time": "2025-12-15T23:45:00.000Z"},
+      {"lon": -8.4, "lat": 42.2, "time": "2025-12-15T23:45:30.000Z"},
+      {"lon": -7.7, "lat": 41.9, "time": "2025-12-15T23:46:00.000Z"},
+      {"lon": -7.0, "lat": 41.6, "time": "2025-12-15T23:47:00.000Z"},
+      {"lon": -6.3, "lat": 41.3, "time": "2025-12-15T23:48:00.000Z"}
+    ],
+    "southern_limit_1sigma": [
+      {"lon": -10.5, "lat": 42.5, "time": "2025-12-15T23:43:00.000Z"},
+      {"lon": -9.8, "lat": 42.2, "time": "2025-12-15T23:44:00.000Z"},
+      {"lon": -9.1, "lat": 41.9, "time": "2025-12-15T23:45:00.000Z"},
+      {"lon": -8.4, "lat": 41.6, "time": "2025-12-15T23:45:30.000Z"},
+      {"lon": -7.7, "lat": 41.3, "time": "2025-12-15T23:46:00.000Z"},
+      {"lon": -7.0, "lat": 41.0, "time": "2025-12-15T23:47:00.000Z"},
+      {"lon": -6.3, "lat": 40.7, "time": "2025-12-15T23:48:00.000Z"}
+    ]
+  },
+  "time_markers": [
+    {"lon": -10.5, "lat": 42.8, "time": "23:43:00", "seconds_from_mid": -150},
+    {"lon": -9.8, "lat": 42.5, "time": "23:44:00", "seconds_from_mid": -90},
+    {"lon": -9.1, "lat": 42.2, "time": "23:45:00", "seconds_from_mid": -30},
+    {"lon": -8.4, "lat": 41.9, "time": "23:45:30", "seconds_from_mid": 0},
+    {"lon": -7.7, "lat": 41.6, "time": "23:46:00", "seconds_from_mid": 30},
+    {"lon": -7.0, "lat": 41.3, "time": "23:47:00", "seconds_from_mid": 90},
+    {"lon": -6.3, "lat": 41.0, "time": "23:48:00", "seconds_from_mid": 150}
+  ],
+  "observation_stations": [
+    {"name": "Madrid", "lon": -3.7, "lat": 40.4, "status": "planned"},
+    {"name": "Barcelona", "lon": 2.2, "lat": 41.4, "status": "planned"},
+    {"name": "Porto", "lon": -8.6, "lat": 41.2, "status": "positive"},
+    {"name": "Lisbon", "lon": -9.1, "lat": 38.7, "status": "negative"}
+  ],
+  "metadata": {
+    "prediction_source": "IOCalc",
+    "prediction_version": "1.2.0",
+    "generated_date": "2025-12-02T10:00:00Z",
+    "author": "IOC Network",
+    "notes": "Prediction based on Gaia DR3 star positions"
+  }
+}

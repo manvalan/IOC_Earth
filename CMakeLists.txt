@@ -44,10 +44,12 @@ add_compile_options(
 # Definisci la libreria
 set(LIBRARY_SOURCES
     src/MapPathRenderer.cpp
+    src/OccultationRenderer.cpp
 )
 
 set(LIBRARY_HEADERS
     include/MapPathRenderer.h
+    include/OccultationRenderer.h
 )
 
 # Crea la libreria

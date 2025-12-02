@@ -12,7 +12,11 @@ target_link_libraries(gps_track PRIVATE ioc_earth)
 add_executable(italy_map italy_map.cpp)
 target_link_libraries(italy_map PRIVATE ioc_earth)
 
+# Esempio con occultazione asteroidale
+add_executable(occultation_map occultation_map.cpp)
+target_link_libraries(occultation_map PRIVATE ioc_earth)
+
 # Installa gli esempi (opzionale)
-install(TARGETS simple_map gps_track italy_map
+install(TARGETS simple_map gps_track italy_map occultation_map
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
 )
