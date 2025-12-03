@@ -46,12 +46,14 @@ set(LIBRARY_SOURCES
     src/MapPathRenderer.cpp
     src/OccultationRenderer.cpp
     src/FinderChartRenderer.cpp
+    src/SkyMapRenderer.cpp
 )
 
 set(LIBRARY_HEADERS
     include/MapPathRenderer.h
     include/OccultationRenderer.h
     include/FinderChartRenderer.h
+    include/SkyMapRenderer.h
 )
 
 # Crea la libreria

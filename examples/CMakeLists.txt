@@ -32,7 +32,11 @@ target_link_libraries(finder_chart PRIVATE ioc_earth)
 add_executable(test_17030 test_17030.cpp)
 target_link_libraries(test_17030 PRIVATE ioc_earth)
 
+# Test SkyMapRenderer - Mappa celeste astronomica
+add_executable(test_skymap test_skymap.cpp)
+target_link_libraries(test_skymap PRIVATE ioc_earth)
+
 # Installa gli esempi (opzionale)
-install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo finder_chart test_17030
+install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo finder_chart test_17030 test_skymap
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
 )
