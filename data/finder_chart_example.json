@@ -1,0 +1,60 @@
+{
+  "target": {
+    "name": "TYC 6009-01262-1",
+    "ra_deg": 280.45,
+    "dec_deg": -23.12,
+    "magnitude": 11.3
+  },
+  
+  "field_of_view": {
+    "center_ra_deg": 280.45,
+    "center_dec_deg": -23.12,
+    "fov_deg": 5.0,
+    "magnitude_limit": 13.0
+  },
+  
+  "sao_stars": [
+    {"sao": 187600, "ra": 280.20, "dec": -23.50, "mag": 8.2, "sp": "K0", "const": "Cap"},
+    {"sao": 187610, "ra": 280.35, "dec": -23.30, "mag": 9.1, "sp": "G5", "const": "Cap"},
+    {"sao": 187620, "ra": 280.50, "dec": -23.00, "mag": 8.8, "sp": "K2", "const": "Cap"},
+    {"sao": 187630, "ra": 280.60, "dec": -23.40, "mag": 9.5, "sp": "A0", "const": "Cap"},
+    {"sao": 187640, "ra": 280.25, "dec": -22.90, "mag": 10.1, "sp": "F8", "const": "Cap"},
+    {"sao": 187650, "ra": 280.70, "dec": -23.20, "mag": 10.5, "sp": "G0", "const": "Cap"},
+    {"sao": 187660, "ra": 280.15, "dec": -23.15, "mag": 11.0, "sp": "K5", "const": "Cap"},
+    {"sao": 187670, "ra": 280.55, "dec": -22.80, "mag": 11.5, "sp": "M0", "const": "Cap"},
+    {"sao": 187680, "ra": 280.40, "dec": -23.45, "mag": 12.0, "sp": "K0", "const": "Cap"},
+    {"sao": 187690, "ra": 280.30, "dec": -22.95, "mag": 12.5, "sp": "G8", "const": "Cap"}
+  ],
+  
+  "constellation_lines": [
+    {"ra1": 280.0, "dec1": -24.0, "ra2": 280.5, "dec2": -23.5, "const": "Capricornus"},
+    {"ra1": 280.5, "dec1": -23.5, "ra2": 281.0, "dec2": -23.0, "const": "Capricornus"},
+    {"ra1": 280.5, "dec1": -23.5, "ra2": 280.3, "dec2": -22.8, "const": "Capricornus"},
+    {"ra1": 280.0, "dec1": -24.0, "ra2": 279.8, "dec2": -23.2, "const": "Capricornus"}
+  ],
+  
+  "constellation_boundaries": [
+    {
+      "constellation": "Capricornus",
+      "points": [
+        [279.5, -22.0],
+        [281.5, -22.0],
+        [281.5, -24.5],
+        [279.5, -24.5],
+        [279.5, -22.0]
+      ]
+    }
+  ],
+  
+  "asteroid_trajectory": {
+    "points": [
+      {"ra": 280.40, "dec": -23.15, "time": "22:10:00"},
+      {"ra": 280.42, "dec": -23.13, "time": "22:12:00"},
+      {"ra": 280.44, "dec": -23.11, "time": "22:14:00"},
+      {"ra": 280.45, "dec": -23.12, "time": "22:15:30"},
+      {"ra": 280.46, "dec": -23.10, "time": "22:16:00"},
+      {"ra": 280.48, "dec": -23.08, "time": "22:18:00"},
+      {"ra": 280.50, "dec": -23.06, "time": "22:20:00"}
+    ]
+  }
+}

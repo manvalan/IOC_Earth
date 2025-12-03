@@ -24,7 +24,11 @@ target_link_libraries(occultation_html PRIVATE ioc_earth)
 add_executable(api_usage_demo api_usage_demo.cpp)
 target_link_libraries(api_usage_demo PRIVATE ioc_earth)
 
+# Esempio con finder chart astronomica
+add_executable(finder_chart finder_chart.cpp)
+target_link_libraries(finder_chart PRIVATE ioc_earth)
+
 # Installa gli esempi (opzionale)
-install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo
+install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo finder_chart
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
 )

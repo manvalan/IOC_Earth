@@ -45,11 +45,13 @@ add_compile_options(
 set(LIBRARY_SOURCES
     src/MapPathRenderer.cpp
     src/OccultationRenderer.cpp
+    src/FinderChartRenderer.cpp
 )
 
 set(LIBRARY_HEADERS
     include/MapPathRenderer.h
     include/OccultationRenderer.h
+    include/FinderChartRenderer.h
 )
 
 # Crea la libreria

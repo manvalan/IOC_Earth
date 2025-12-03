@@ -16,6 +16,13 @@ Libreria C++ per il rendering di mappe e tracciati GPS utilizzando Mapnik.
   - Time markers lungo il percorso
   - Stazioni di osservazione con stato
   - Caricamento dati da JSON compatibile con IOCalc
+- ✅ **Finder Chart (Carte di Avvicinamento Astronomiche)**
+  - Sfondo bianco per stampa
+  - Stelle del catalogo SAO con numeri identificativi
+  - Linee delle costellazioni
+  - Confini delle costellazioni
+  - Griglia coordinate RA/Dec
+  - Target evidenziato con traiettoria
 
 ## 🚀 Quick Start
 
@@ -324,6 +331,84 @@ cd build
 
 # Esegui il demo completo di utilizzo API
 ./examples/api_usage_demo
+
+# Esegui l'esempio di finder chart astronomica
+./examples/finder_chart
+```
+
+## 🔭 Finder Chart (Carte di Avvicinamento)
+
+Per osservazioni astronomiche, la libreria include un renderer per carte di avvicinamento con sfondo bianco:
+
+```cpp
+#include "FinderChartRenderer.h"
+
+// Crea renderer per carta 800x800 pixel
+ioc_earth::FinderChartRenderer renderer(800, 800);
+
+// Imposta il campo visivo (RA/Dec in gradi)
+renderer.setFieldOfView(
+    280.45,  // RA centro
+    -23.12,  // Dec centro
+    5.0      // Campo visivo in gradi
+);
+
+// Magnitudine limite
+renderer.setMagnitudeLimit(13.0);
+
+// Aggiungi stelle SAO
+std::vector<ioc_earth::SAOStar> stars = {
+    {187600, 280.20, -23.50, 8.2, "K0", "Cap"},
+    {187610, 280.35, -23.30, 9.1, "G5", "Cap"},
+    // ... altre stelle
+};
+renderer.addSAOStars(stars);
+
+// Aggiungi linee costellazioni
+std::vector<ioc_earth::ConstellationLine> lines = {
+    {280.0, -24.0, 280.5, -23.5, "Capricornus"},
+    // ... altre linee
+};
+renderer.addConstellationLines(lines);
+
+// Aggiungi confini costellazioni
+std::vector<ioc_earth::ConstellationBoundary> boundaries;
+// ... definisci confini
+renderer.addConstellationBoundaries(boundaries);
+
+// Imposta target con traiettoria
+ioc_earth::TargetInfo target;
+target.name = "TYC 6009-01262-1";
+target.ra_deg = 280.45;
+target.dec_deg = -23.12;
+target.magnitude = 11.3;
+target.trajectory = {{280.40, -23.15}, {280.45, -23.12}, ...};
+target.trajectory_times = {"22:10:00", "22:15:30", ...};
+renderer.setTarget(target);
+
+// Stile con sfondo bianco
+ioc_earth::FinderChartRenderer::ChartStyle style;
+style.background_color = "#FFFFFF";           // Sfondo bianco
+style.constellation_line_color = "#0066CC";   // Linee blu
+style.constellation_boundary_color = "#00AA00"; // Confini verdi
+style.star_color = "#000000";                 // Stelle nere
+style.target_color = "#FF0000";               // Target rosso
+style.show_star_labels = true;                // Mostra numeri SAO
+renderer.setChartStyle(style);
+
+// Renderizza
+renderer.renderFinderChart("finder_chart.png");
+```
+
+### Caratteristiche Finder Chart
+
+- ✅ **Sfondo bianco** - Ideale per stampa
+- ✅ **Stelle SAO** - Con numeri catalogo visibili
+- ✅ **Linee costellazioni** - Blu, configurabili
+- ✅ **Confini costellazioni** - Verdi, configurabili
+- ✅ **Target evidenziato** - Rosso, ben visibile
+- ✅ **Traiettoria asteroide** - Arancione con time markers
+- ✅ **Coordinate celesti** - RA/Dec in gradi
 ```
 
 ### 🔌 Integrazione con Applicazioni
