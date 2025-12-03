@@ -1,0 +1,93 @@
+{
+  "event": {
+    "id": "17030_20251128",
+    "asteroid_name": "17030",
+    "star_name": "SAO 76740",
+    "date_time_utc": "2025-11-28T18:45:00Z",
+    "magnitude_drop": 3.5,
+    "duration_seconds": 8.7,
+    "path_description": "Europa centrale - Italia, Francia, Germania"
+  },
+  "central_line": [
+    {"lon": 0.5, "lat": 45.0, "time": "2025-11-28T18:40:00Z"},
+    {"lon": 1.2, "lat": 45.3, "time": "2025-11-28T18:41:00Z"},
+    {"lon": 1.9, "lat": 45.6, "time": "2025-11-28T18:42:00Z"},
+    {"lon": 2.6, "lat": 45.9, "time": "2025-11-28T18:43:00Z"},
+    {"lon": 3.3, "lat": 46.2, "time": "2025-11-28T18:44:00Z"},
+    {"lon": 4.0, "lat": 46.5, "time": "2025-11-28T18:45:00Z"},
+    {"lon": 4.7, "lat": 46.8, "time": "2025-11-28T18:46:00Z"},
+    {"lon": 5.4, "lat": 47.1, "time": "2025-11-28T18:47:00Z"},
+    {"lon": 6.1, "lat": 47.4, "time": "2025-11-28T18:48:00Z"},
+    {"lon": 6.8, "lat": 47.7, "time": "2025-11-28T18:49:00Z"},
+    {"lon": 7.5, "lat": 48.0, "time": "2025-11-28T18:50:00Z"}
+  ],
+  "northern_limit_1sigma": [
+    {"lon": 0.3, "lat": 45.3, "time": "2025-11-28T18:40:00Z"},
+    {"lon": 1.0, "lat": 45.6, "time": "2025-11-28T18:41:00Z"},
+    {"lon": 1.7, "lat": 45.9, "time": "2025-11-28T18:42:00Z"},
+    {"lon": 2.4, "lat": 46.2, "time": "2025-11-28T18:43:00Z"},
+    {"lon": 3.1, "lat": 46.5, "time": "2025-11-28T18:44:00Z"},
+    {"lon": 3.8, "lat": 46.8, "time": "2025-11-28T18:45:00Z"},
+    {"lon": 4.5, "lat": 47.1, "time": "2025-11-28T18:46:00Z"},
+    {"lon": 5.2, "lat": 47.4, "time": "2025-11-28T18:47:00Z"},
+    {"lon": 5.9, "lat": 47.7, "time": "2025-11-28T18:48:00Z"},
+    {"lon": 6.6, "lat": 48.0, "time": "2025-11-28T18:49:00Z"},
+    {"lon": 7.3, "lat": 48.3, "time": "2025-11-28T18:50:00Z"}
+  ],
+  "southern_limit_1sigma": [
+    {"lon": 0.7, "lat": 44.7, "time": "2025-11-28T18:40:00Z"},
+    {"lon": 1.4, "lat": 45.0, "time": "2025-11-28T18:41:00Z"},
+    {"lon": 2.1, "lat": 45.3, "time": "2025-11-28T18:42:00Z"},
+    {"lon": 2.8, "lat": 45.6, "time": "2025-11-28T18:43:00Z"},
+    {"lon": 3.5, "lat": 45.9, "time": "2025-11-28T18:44:00Z"},
+    {"lon": 4.2, "lat": 46.2, "time": "2025-11-28T18:45:00Z"},
+    {"lon": 4.9, "lat": 46.5, "time": "2025-11-28T18:46:00Z"},
+    {"lon": 5.6, "lat": 46.8, "time": "2025-11-28T18:47:00Z"},
+    {"lon": 6.3, "lat": 47.1, "time": "2025-11-28T18:48:00Z"},
+    {"lon": 7.0, "lat": 47.4, "time": "2025-11-28T18:49:00Z"},
+    {"lon": 7.7, "lat": 47.7, "time": "2025-11-28T18:50:00Z"}
+  ],
+  "time_markers": [
+    {"lon": 2.6, "lat": 45.9, "time": "2025-11-28T18:43:00Z", "seconds_from_mid": -120},
+    {"lon": 4.0, "lat": 46.5, "time": "2025-11-28T18:45:00Z", "seconds_from_mid": 0},
+    {"lon": 5.4, "lat": 47.1, "time": "2025-11-28T18:47:00Z", "seconds_from_mid": 120}
+  ],
+  "observation_stations": [
+    {
+      "name": "Roma (IT)",
+      "lon": 12.5,
+      "lat": 41.9,
+      "status": "positive"
+    },
+    {
+      "name": "Milano (IT)",
+      "lon": 9.2,
+      "lat": 45.5,
+      "status": "positive"
+    },
+    {
+      "name": "Firenze (IT)",
+      "lon": 11.3,
+      "lat": 43.8,
+      "status": "negative"
+    },
+    {
+      "name": "Torino (IT)",
+      "lon": 7.7,
+      "lat": 45.1,
+      "status": "positive"
+    },
+    {
+      "name": "Parigi (FR)",
+      "lon": 2.4,
+      "lat": 48.9,
+      "status": "positive"
+    },
+    {
+      "name": "Berlino (DE)",
+      "lon": 13.4,
+      "lat": 52.5,
+      "status": "negative"
+    }
+  ]
+}

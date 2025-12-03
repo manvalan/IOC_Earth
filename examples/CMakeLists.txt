@@ -36,7 +36,11 @@ target_link_libraries(test_17030 PRIVATE ioc_earth)
 add_executable(test_skymap test_skymap.cpp)
 target_link_libraries(test_skymap PRIVATE ioc_earth)
 
+# Test OccultationRenderer - Asteroide 17030 (28 Nov 2025)
+add_executable(test_occultation_17030 test_occultation_17030.cpp)
+target_link_libraries(test_occultation_17030 PRIVATE ioc_earth)
+
 # Installa gli esempi (opzionale)
-install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo finder_chart test_17030 test_skymap
+install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo finder_chart test_17030 test_skymap test_occultation_17030
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
 )
