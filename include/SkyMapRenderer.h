@@ -16,6 +16,8 @@ struct StarData {
     double dec_deg;              // Declinazione (gradi)
     double magnitude;            // Magnitudine visuale (min=più brillante)
     std::string spectral_type;   // Tipo spettrale (A, B, F, G, K, M, etc.)
+    std::string flamsteed_letter;// Lettera di Flamsteed (es. "α", "β", "γ")
+    std::string constellation;   // Nome della costellazione (es. "Aries")
 };
 
 /**
@@ -51,33 +53,38 @@ struct TargetData {
  * @brief Configurazione stile per le mappe celesti
  */
 struct SkyMapStyle {
-    // Colori
+    // Colori (BIANCO E NERO PROFESSIONALE)
     std::string background_color = "#FFFFFF";              // Bianco
     std::string grid_color = "#CCCCCC";                    // Grigio chiaro
     std::string star_color = "#000000";                    // Nero
-    std::string star_label_color = "#003366";              // Blu scuro
-    std::string constellation_line_color = "#0066CC";      // Blu
-    std::string constellation_boundary_color = "#00AA00";  // Verde
-    std::string target_color = "#FF0000";                  // Rosso
-    std::string trajectory_color = "#FF6600";              // Arancione
-    std::string fov_rect_color = "#990000";                // Rosso scuro per il rettangolo tratteggiato
+    std::string star_label_color = "#000000";              // Nero (SAO numbers e Flamsteed)
+    std::string constellation_line_color = "#000000";      // Nero
+    std::string constellation_boundary_color = "#000000";  // Nero
+    std::string target_color = "#000000";                  // Nero
+    std::string trajectory_color = "#000000";              // Nero
+    std::string fov_rect_color = "#000000";                // Nero per il rettangolo tratteggiato
     
     // Dimensioni e stile
-    double grid_line_width = 0.5;
-    double constellation_line_width = 1.0;
-    double constellation_boundary_width = 1.5;
-    double star_base_size = 2.0;                           // Dimensione base stella
-    double target_size = 6.0;
-    double trajectory_line_width = 2.0;
-    double fov_rect_line_width = 2.0;
+    double grid_line_width = 0.3;
+    double constellation_line_width = 0.8;
+    double constellation_boundary_width = 0.5;
+    double star_base_size = 1.5;                           // Dimensione base stella
+    double target_size = 4.0;
+    double trajectory_line_width = 1.0;
+    double fov_rect_line_width = 1.5;
     
     // Font
-    int label_font_size = 8;
+    int label_font_size = 7;
     std::string label_font = "DejaVu Sans";
+    
+    // Griglia di coordinate
+    double grid_step_degrees = 10.0;                        // Spaziatura griglia (5° o 10°)
+    bool grid_dashed = true;                                // Linee tratteggiate
     
     // Visualizzazione
     bool show_grid = true;
-    bool show_star_labels = true;
+    bool show_star_labels = true;                           // SAO numbers
+    bool show_flamsteed_letters = true;                     // Lettere di Flamsteed
     bool show_constellation_lines = true;
     bool show_constellation_boundaries = true;
     bool show_constellation_names = false;

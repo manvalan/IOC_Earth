@@ -98,6 +98,41 @@ bool SkyMapRenderer::renderSkyMap(const std::string& output_path) {
             center_dec_ + half_fov
         );
         
+        // Renderizza griglia di coordinate RA/Dec (linee tratteggiate)
+        if (style_.show_grid) {
+            std::cout << "📏 Rendering griglia di coordinate RA/Dec..." << std::endl;
+            
+            double step = style_.grid_step_degrees;
+            double min_ra = center_ra_ - half_fov;
+            double max_ra = center_ra_ + half_fov;
+            double min_dec = center_dec_ - half_fov;
+            double max_dec = center_dec_ + half_fov;
+            
+            // Linee verticali di AR (Right Ascension)
+            double ra_start = std::floor(min_ra / step) * step;
+            for (double ra = ra_start; ra <= max_ra; ra += step) {
+                if (ra >= min_ra && ra <= max_ra) {
+                    std::vector<GPSPoint> ra_line;
+                    ra_line.emplace_back(ra, min_dec, "");
+                    ra_line.emplace_back(ra, max_dec, "");
+                    pImpl_->renderer->addGPSPath(ra_line, style_.grid_color, 
+                                                 style_.grid_line_width);
+                }
+            }
+            
+            // Linee orizzontali di DEC (Declinazione)
+            double dec_start = std::floor(min_dec / step) * step;
+            for (double dec = dec_start; dec <= max_dec; dec += step) {
+                if (dec >= min_dec && dec <= max_dec) {
+                    std::vector<GPSPoint> dec_line;
+                    dec_line.emplace_back(min_ra, dec, "");
+                    dec_line.emplace_back(max_ra, dec, "");
+                    pImpl_->renderer->addGPSPath(dec_line, style_.grid_color, 
+                                                 style_.grid_line_width);
+                }
+            }
+        }
+        
         // Renderizza confini costellazioni
         if (style_.show_constellation_boundaries) {
             std::cout << "📍 Rendering confini costellazioni..." << std::endl;
@@ -140,6 +175,11 @@ bool SkyMapRenderer::renderSkyMap(const std::string& output_path) {
             std::string label;
             if (style_.show_star_labels) {
                 label = "SAO " + std::to_string(star.sao_number);
+                
+                // Aggiungi lettera di Flamsteed se disponibile
+                if (style_.show_flamsteed_letters && !star.flamsteed_letter.empty()) {
+                    label = star.flamsteed_letter + " " + star.constellation + "\n" + label;
+                }
             }
             
             star_points.emplace_back(star.ra_deg, star.dec_deg, label);
@@ -213,6 +253,7 @@ bool SkyMapRenderer::renderSkyMap(const std::string& output_path) {
             std::cout << "   Magnitudine limite: " << mag_limit_ << std::endl;
             std::cout << "   Linee costellazioni: " << constellation_lines_.size() << std::endl;
             std::cout << "   Confini costellazioni: " << constellation_boundaries_.size() << std::endl;
+            std::cout << "   Griglia RA/Dec: ogni " << style_.grid_step_degrees << "°" << std::endl;
             if (!target_.name.empty()) {
                 std::cout << "   Target: " << target_.name << std::endl;
             }

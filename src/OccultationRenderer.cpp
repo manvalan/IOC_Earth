@@ -5,6 +5,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iomanip>
+#include <limits>
 
 // Parser JSON semplice (per ora manuale, poi si può integrare nlohmann/json)
 #include <regex>
@@ -386,6 +387,70 @@ bool OccultationRenderer::renderOccultationMap(const std::string& output_path,
         std::cout << "Calcolo estensione mappa..." << std::endl;
         autoCalculateExtent(15.0);
         
+        // Aggiungi griglia di coordinate (lat/lon)
+        if (style_.show_grid) {
+            std::cout << "Aggiunta griglia di coordinate..." << std::endl;
+            double step = style_.grid_step_degrees;
+            
+            // Ottieni i limiti dalla mappa
+            double min_lon, min_lat, max_lon, max_lat;
+            // Nota: MapPathRenderer non espone questi valori direttamente
+            // Possiamo calcolarli dai dati dell'occultazione
+            min_lon = std::numeric_limits<double>::max();
+            max_lon = std::numeric_limits<double>::lowest();
+            min_lat = std::numeric_limits<double>::max();
+            max_lat = std::numeric_limits<double>::lowest();
+            
+            for (const auto& p : data_.central_line) {
+                min_lon = std::min(min_lon, p.longitude);
+                max_lon = std::max(max_lon, p.longitude);
+                min_lat = std::min(min_lat, p.latitude);
+                max_lat = std::max(max_lat, p.latitude);
+            }
+            for (const auto& p : data_.northern_limit) {
+                min_lon = std::min(min_lon, p.longitude);
+                max_lon = std::max(max_lon, p.longitude);
+                min_lat = std::min(min_lat, p.latitude);
+                max_lat = std::max(max_lat, p.latitude);
+            }
+            for (const auto& p : data_.southern_limit) {
+                min_lon = std::min(min_lon, p.longitude);
+                max_lon = std::max(max_lon, p.longitude);
+                min_lat = std::min(min_lat, p.latitude);
+                max_lat = std::max(max_lat, p.latitude);
+            }
+            
+            // Aggiungi margine
+            double lon_margin = (max_lon - min_lon) * 0.15;
+            double lat_margin = (max_lat - min_lat) * 0.15;
+            min_lon -= lon_margin;
+            max_lon += lon_margin;
+            min_lat -= lat_margin;
+            max_lat += lat_margin;
+            
+            // Linee verticali di longitudine
+            double lon_start = std::floor(min_lon / step) * step;
+            for (double lon = lon_start; lon <= max_lon; lon += step) {
+                if (lon >= min_lon && lon <= max_lon) {
+                    std::vector<GPSPoint> lon_line;
+                    lon_line.emplace_back(lon, min_lat, "");
+                    lon_line.emplace_back(lon, max_lat, "");
+                    renderer_->addGPSPath(lon_line, style_.grid_color, 0.3);
+                }
+            }
+            
+            // Linee orizzontali di latitudine
+            double lat_start = std::floor(min_lat / step) * step;
+            for (double lat = lat_start; lat <= max_lat; lat += step) {
+                if (lat >= min_lat && lat <= max_lat) {
+                    std::vector<GPSPoint> lat_line;
+                    lat_line.emplace_back(min_lon, lat, "");
+                    lat_line.emplace_back(max_lon, lat, "");
+                    renderer_->addGPSPath(lat_line, style_.grid_color, 0.3);
+                }
+            }
+        }
+        
         // Aggiungi shapefile se richiesto
         if (include_shapefile) {
             std::cout << "Caricamento shapefile..." << std::endl;
@@ -419,6 +484,9 @@ bool OccultationRenderer::renderOccultationMap(const std::string& output_path,
             std::cout << "  Tempo: " << data_.date_time_utc << std::endl;
             std::cout << "  Durata: " << data_.duration_seconds << " secondi" << std::endl;
             std::cout << "  Calo magnitudine: " << data_.magnitude_drop << std::endl;
+            if (style_.show_grid) {
+                std::cout << "  ✓ Griglia RA/Dec ogni " << style_.grid_step_degrees << "° visibile" << std::endl;
+            }
         }
         
         return success;

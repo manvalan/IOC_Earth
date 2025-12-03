@@ -133,25 +133,39 @@ public:
      * @brief Configura i colori e gli stili della visualizzazione
      */
     struct RenderStyle {
-        std::string central_line_color = "#FF0000";     // Rosso per linea centrale
-        double central_line_width = 3.0;
+        // BIANCO E NERO PROFESSIONALE - Confini, città, griglia
+        std::string background_color = "#FFFFFF";       // Bianco
+        std::string grid_color = "#CCCCCC";             // Grigio chiaro per griglia
         
-        std::string sigma_lines_color = "#FFA500";      // Arancione per limiti sigma
-        double sigma_lines_width = 2.0;
+        // Path dell'occultazione
+        std::string central_line_color = "#000000";     // Nero per linea centrale
+        double central_line_width = 2.5;
         
-        std::string time_markers_color = "#0000FF";     // Blu per marker temporali
-        double time_marker_size = 10.0;
+        std::string sigma_lines_color = "#333333";      // Grigio scuro per limiti sigma (linee tratteggiate)
+        double sigma_lines_width = 1.5;
         
-        std::string station_positive_color = "#00FF00"; // Verde per osservazioni positive
-        std::string station_negative_color = "#FF0000"; // Rosso per osservazioni negative
+        // Time markers e stazioni
+        std::string time_markers_color = "#000000";     // Nero per marker temporali
+        double time_marker_size = 8.0;
+        
+        std::string station_positive_color = "#000000"; // Nero per osservazioni positive
+        std::string station_negative_color = "#000000"; // Nero per osservazioni negative
         std::string station_clouded_color = "#CCCCCC";  // Grigio per cloud-out
-        double station_marker_size = 8.0;
+        double station_marker_size = 6.0;
         
-        std::string background_color = "#E0E0E0";       // Grigio chiaro per sfondo
+        // Elementi geografici
+        std::string coastline_color = "#000000";        // Nero per coste
+        std::string border_color = "#333333";           // Grigio scuro per confini
+        std::string city_color = "#000000";             // Nero per città
         
+        // Etichette
         bool show_time_labels = true;
         bool show_station_labels = true;
-        int label_font_size = 10;
+        bool show_city_names = true;
+        bool show_grid = true;
+        double grid_step_degrees = 5.0;                 // Griglia ogni 5 gradi
+        int label_font_size = 9;
+        std::string label_font = "DejaVu Sans";
     };
     
     void setRenderStyle(const RenderStyle& style);
