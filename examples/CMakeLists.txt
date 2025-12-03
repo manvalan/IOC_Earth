@@ -28,7 +28,11 @@ target_link_libraries(api_usage_demo PRIVATE ioc_earth)
 add_executable(finder_chart finder_chart.cpp)
 target_link_libraries(finder_chart PRIVATE ioc_earth)
 
+# Test Asteroid 17030 (26-29 Nov 2025)
+add_executable(test_17030 test_17030.cpp)
+target_link_libraries(test_17030 PRIVATE ioc_earth)
+
 # Installa gli esempi (opzionale)
-install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo finder_chart
+install(TARGETS simple_map gps_track italy_map occultation_map occultation_html api_usage_demo finder_chart test_17030
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}/ioc_earth_examples
 )

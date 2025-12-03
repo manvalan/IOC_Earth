@@ -1,0 +1,59 @@
+{
+  "target": {
+    "name": "Asteroid 17030",
+    "designation": "17030",
+    "ra_deg": 45.678,
+    "dec_deg": 12.345,
+    "magnitude": 13.2
+  },
+  "field_of_view": {
+    "center_ra_deg": 45.678,
+    "center_dec_deg": 12.345,
+    "fov_deg": 8.0
+  },
+  "magnitude_limit": 14.0,
+  "sao_stars": [
+    {"sao_number": 75234, "ra_deg": 45.2, "dec_deg": 12.8, "magnitude": 8.5, "spectral_type": "G2", "constellation": "Ari"},
+    {"sao_number": 75245, "ra_deg": 45.9, "dec_deg": 12.1, "magnitude": 9.1, "spectral_type": "K0", "constellation": "Ari"},
+    {"sao_number": 75256, "ra_deg": 46.3, "dec_deg": 12.7, "magnitude": 9.8, "spectral_type": "A5", "constellation": "Ari"},
+    {"sao_number": 75267, "ra_deg": 45.5, "dec_deg": 11.9, "magnitude": 10.2, "spectral_type": "F8", "constellation": "Ari"},
+    {"sao_number": 75278, "ra_deg": 44.8, "dec_deg": 12.5, "magnitude": 10.6, "spectral_type": "G5", "constellation": "Ari"},
+    {"sao_number": 75289, "ra_deg": 46.1, "dec_deg": 11.8, "magnitude": 11.1, "spectral_type": "K2", "constellation": "Ari"},
+    {"sao_number": 75300, "ra_deg": 44.9, "dec_deg": 13.0, "magnitude": 11.5, "spectral_type": "M0", "constellation": "Ari"},
+    {"sao_number": 75311, "ra_deg": 46.5, "dec_deg": 12.3, "magnitude": 12.0, "spectral_type": "F5", "constellation": "Ari"},
+    {"sao_number": 75322, "ra_deg": 45.1, "dec_deg": 11.5, "magnitude": 12.4, "spectral_type": "K5", "constellation": "Ari"},
+    {"sao_number": 75333, "ra_deg": 46.8, "dec_deg": 12.9, "magnitude": 13.0, "spectral_type": "G8", "constellation": "Ari"},
+    {"sao_number": 75344, "ra_deg": 44.5, "dec_deg": 12.2, "magnitude": 13.5, "spectral_type": "A0", "constellation": "Ari"},
+    {"sao_number": 75355, "ra_deg": 46.0, "dec_deg": 13.2, "magnitude": 13.8, "spectral_type": "K8", "constellation": "Ari"}
+  ],
+  "constellation_lines": [
+    {"ra1_deg": 45.2, "dec1_deg": 12.8, "ra2_deg": 45.9, "dec2_deg": 12.1},
+    {"ra1_deg": 45.9, "dec1_deg": 12.1, "ra2_deg": 46.3, "dec2_deg": 12.7},
+    {"ra1_deg": 46.3, "dec1_deg": 12.7, "ra2_deg": 45.5, "dec2_deg": 11.9},
+    {"ra1_deg": 45.5, "dec1_deg": 11.9, "ra2_deg": 44.8, "dec2_deg": 12.5},
+    {"ra1_deg": 44.8, "dec1_deg": 12.5, "ra2_deg": 45.2, "dec2_deg": 12.8}
+  ],
+  "constellation_boundaries": [
+    {
+      "constellation": "Aries",
+      "points": [
+        {"ra_deg": 44.0, "dec_deg": 11.0},
+        {"ra_deg": 47.5, "dec_deg": 11.0},
+        {"ra_deg": 47.5, "dec_deg": 13.5},
+        {"ra_deg": 44.0, "dec_deg": 13.5},
+        {"ra_deg": 44.0, "dec_deg": 11.0}
+      ]
+    }
+  ],
+  "asteroid_trajectory": {
+    "points": [
+      {"timestamp": "2025-11-26T00:00:00Z", "ra_deg": 45.2, "dec_deg": 12.1, "magnitude": 13.2},
+      {"timestamp": "2025-11-26T12:00:00Z", "ra_deg": 45.35, "dec_deg": 12.18, "magnitude": 13.2},
+      {"timestamp": "2025-11-27T00:00:00Z", "ra_deg": 45.5, "dec_deg": 12.25, "magnitude": 13.2},
+      {"timestamp": "2025-11-27T12:00:00Z", "ra_deg": 45.65, "dec_deg": 12.32, "magnitude": 13.2},
+      {"timestamp": "2025-11-28T00:00:00Z", "ra_deg": 45.8, "dec_deg": 12.38, "magnitude": 13.2},
+      {"timestamp": "2025-11-28T12:00:00Z", "ra_deg": 45.95, "dec_deg": 12.44, "magnitude": 13.2},
+      {"timestamp": "2025-11-29T00:00:00Z", "ra_deg": 46.1, "dec_deg": 12.5, "magnitude": 13.2}
+    ]
+  }
+}
